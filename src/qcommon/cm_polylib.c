@@ -26,6 +26,7 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include <stdint.h>
 
 // this is only used for visualization tools in cm_ debug functions
 
@@ -277,7 +278,7 @@ winding_t   *CopyWinding( winding_t *w ) {
 	winding_t   *c;
 
 	c = AllocWinding( w->numpoints );
-	size = (int)( (winding_t *)0 )->p[w->numpoints];
+	size = (size_t)( (winding_t *)0 )->p[w->numpoints];
 	Com_Memcpy( c, w, size );
 	return c;
 }

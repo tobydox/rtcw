@@ -42,6 +42,9 @@ qboolean stdinIsATTY;
 // Used to determine where to store user-specific files
 static char homePath[ MAX_OSPATH ] = { 0 };
 
+char *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
+qboolean FS_CreatePath( char *OSPath );
+
 /*
 ==================
 Sys_DefaultHomePath
@@ -213,7 +216,7 @@ Sys_Basename
 */
 const char *Sys_Basename( char *path )
 {
-	return basename( path );
+	return basename( strdup(path ));
 }
 
 /*
@@ -223,7 +226,7 @@ Sys_Dirname
 */
 const char *Sys_Dirname( char *path )
 {
-	return dirname( path );
+	return dirname( strdup(path) );
 }
 
 /*
@@ -792,7 +795,7 @@ char* Sys_GetDLLName( const char *name ) {
 #elif defined __ppc__
         return va( "%s.mp.ppc.so", name );
 #else
-#error Unknown arch
+        return va( "%s.mp.x86_64.so", name );
 #endif
 }
 

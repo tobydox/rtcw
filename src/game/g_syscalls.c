@@ -29,16 +29,18 @@ If you have questions concerning this license or the applicable additional terms
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
 #include "g_local.h"
+#include "../qcommon/qcommon.h"
+#include <stdint.h>
 
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
 
-static int ( QDECL * syscall )( int arg, ... ) = ( int ( QDECL * )( int, ... ) ) - 1;
+static intptr_t ( QDECL * syscall )( intptr_t arg, ... ) = ( intptr_t ( QDECL * )( intptr_t, ... ) ) - 1;
 
 #if defined( __MACOS__ )
 #pragma export on
 #endif
-Q_EXPORT void dllEntry( int ( QDECL *syscallptr )( int arg,... ) ) {
+Q_EXPORT void dllEntry( intptr_t ( QDECL *syscallptr )( intptr_t arg,... ) ) {
 #if defined( __MACOS__ )
 #pragma export off
 #endif
@@ -46,9 +48,7 @@ Q_EXPORT void dllEntry( int ( QDECL *syscallptr )( int arg,... ) ) {
 }
 
 int PASSFLOAT( float x ) {
-	float floatTemp;
-	floatTemp = x;
-	return *(int *)&floatTemp;
+	return PASSFLOAT_MACRO(x);
 }
 
 void    trap_Printf( const char *fmt ) {

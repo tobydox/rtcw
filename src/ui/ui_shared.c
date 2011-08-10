@@ -84,7 +84,7 @@ static qboolean Menu_OverActiveItem( menuDef_t *menu, float x, float y );
 #ifdef CGAME
 #define MEM_POOL_SIZE  128 * 1024
 #else
-#define MEM_POOL_SIZE  1024 * 1024
+#define MEM_POOL_SIZE  1536 * 1024
 #endif
 
 static char memoryPool[MEM_POOL_SIZE];
@@ -444,7 +444,7 @@ Color_Parse
 */
 qboolean Color_Parse( char **p, vec4_t *c ) {
 	int i;
-	float f;
+	float f = 0;
 
 	for ( i = 0; i < 4; i++ ) {
 		if ( !Float_Parse( p, &f ) ) {
@@ -611,7 +611,7 @@ PC_Script_Parse
 =================
 */
 qboolean PC_Script_Parse( int handle, const char **out ) {
-	char script[1024];
+	char script[4096];
 	pc_token_t token;
 
 	memset( script, 0, sizeof( script ) );
@@ -636,11 +636,11 @@ qboolean PC_Script_Parse( int handle, const char **out ) {
 		}
 
 		if ( token.string[1] != '\0' ) {
-			Q_strcat( script, 1024, va( "\"%s\"", token.string ) );
+			Q_strcat( script, 4096, va( "\"%s\"", token.string ) );
 		} else {
-			Q_strcat( script, 1024, token.string );
+			Q_strcat( script, 4096, token.string );
 		}
-		Q_strcat( script, 1024, " " );
+		Q_strcat( script, 4096, " " );
 	}
 	//return qfalse;
 }
@@ -1528,12 +1528,12 @@ int scriptCommandCount = sizeof( commandList ) / sizeof( commandDef_t );
 
 
 void Item_RunScript( itemDef_t *item, const char *s ) {
-	char script[1024], *p;
+	char script[4096], *p;
 	int i;
 	qboolean bRan;
 	memset( script, 0, sizeof( script ) );
 	if ( item && s && s[0] ) {
-		Q_strcat( script, 1024, s );
+		Q_strcat( script, 4096, s );
 		p = script;
 		while ( 1 ) {
 			const char *command;
@@ -1564,13 +1564,13 @@ void Item_RunScript( itemDef_t *item, const char *s ) {
 
 
 qboolean Item_EnableShowViaCvar( itemDef_t *item, int flag ) {
-	char script[1024], *p;
+	char script[4096], *p;
 	memset( script, 0, sizeof( script ) );
 	if ( item && item->enableCvar && *item->enableCvar && item->cvarTest && *item->cvarTest ) {
-		char buff[1024];
+		char buff[4096];
 		DC->getCVarString( item->cvarTest, buff, sizeof( buff ) );
 
-		Q_strcat( script, 1024, item->enableCvar );
+		Q_strcat( script, 4096, item->enableCvar );
 		p = script;
 		while ( 1 ) {
 			const char *val;
@@ -2200,7 +2200,7 @@ int Item_Multi_CountSettings( itemDef_t *item ) {
 }
 
 int Item_Multi_FindCvarByValue( itemDef_t *item ) {
-	char buff[1024];
+	char buff[4096];
 	float value = 0;
 	int i;
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
@@ -2226,7 +2226,7 @@ int Item_Multi_FindCvarByValue( itemDef_t *item ) {
 }
 
 const char *Item_Multi_Setting( itemDef_t *item ) {
-	char buff[1024];
+	char buff[4096];
 	float value = 0;
 	int i;
 	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
@@ -2279,7 +2279,7 @@ qboolean Item_Multi_HandleKey( itemDef_t *item, int key ) {
 }
 
 qboolean Item_TextField_HandleKey( itemDef_t *item, int key ) {
-	char buff[1024];
+	char buff[4096];
 	int len;
 	itemDef_t *newItem = NULL;
 	editFieldDef_t *editPtr = (editFieldDef_t*)item->typeData;
@@ -3125,9 +3125,9 @@ void Item_TextColor( itemDef_t *item, vec4_t *newColor ) {
 }
 
 void Item_Text_AutoWrapped_Paint( itemDef_t *item ) {
-	char text[1024];
+	char text[4096];
 	const char *p, *textPtr, *newLinePtr;
-	char buff[1024];
+	char buff[4096];
 	int width, height, len, textWidth, newLine, newLineWidth;
 	float y;
 	vec4_t color;
@@ -3201,9 +3201,9 @@ void Item_Text_AutoWrapped_Paint( itemDef_t *item ) {
 }
 
 void Item_Text_Wrapped_Paint( itemDef_t *item ) {
-	char text[1024];
+	char text[4096];
 	const char *p, *start, *textPtr;
-	char buff[1024];
+	char buff[4096];
 	int width, height;
 	float x, y;
 	vec4_t color;
@@ -3244,7 +3244,7 @@ void Item_Text_Wrapped_Paint( itemDef_t *item ) {
 }
 
 void Item_Text_Paint( itemDef_t *item ) {
-	char text[1024];
+	char text[4096];
 	char infostring[SAVE_INFOSTRING_LENGTH];
 	const char *textPtr;
 	int height, width;
@@ -3329,7 +3329,7 @@ void Item_Text_Paint( itemDef_t *item ) {
 //void			trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
 
 void Item_TextField_Paint( itemDef_t *item ) {
-	char buff[1024];
+	char buff[4096];
 	vec4_t newColor, lowLight;
 	int offset;
 	menuDef_t *parent = (menuDef_t*)item->parent;

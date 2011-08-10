@@ -119,6 +119,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "bg_lib.h"
 
+typedef int intptr_t;
+
 #else
 
 #include <assert.h>

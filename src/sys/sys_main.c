@@ -50,6 +50,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 static char binaryPath[ MAX_OSPATH ] = { 0 };
 static char installPath[ MAX_OSPATH ] = { 0 };
 
+const char *Sys_TempPath( void );
+const char *Sys_Dirname( char *path );
+char *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
+
 /*
 =================
 Sys_SetBinaryPath
@@ -449,7 +453,12 @@ Used to load a development dll instead of a virtual machine
 
 #ifdef __linux__
 #define DLL_EXT ".so"
+#ifdef __i386__
 #define DLL_ARCH "i386"
+#endif
+#ifdef __x86_64__
+#define DLL_ARCH "x86_64"
+#endif
 #endif
 #ifdef MACOS_X
 #define DLL_EXT ".dylib"
@@ -462,11 +471,11 @@ Used to load a development dll instead of a virtual machine
 
 
 void *Sys_LoadDll( const char *name,
-	int (**entryPoint)(int, ...),
-	int (*systemcalls)(int, ...) )
+	intptr_t (**entryPoint)(intptr_t, ...),
+	intptr_t (*systemcalls)(intptr_t, ...) )
 {
 	void  *libHandle;
-	void  (*dllEntry)( int (*syscallptr)(int, ...) );
+	void  (*dllEntry)( intptr_t (*syscallptr)(intptr_t, ...) );
 	char  fname[MAX_OSPATH];
 	char  *basepath;
 	char  *homepath;
@@ -577,6 +586,7 @@ void Sys_SigHandler( int signal )
 main
 =================
 */
+
 int main( int argc, char **argv )
 {
 	int   i;

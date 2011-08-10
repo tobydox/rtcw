@@ -51,6 +51,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "be_interface.h"
 #include "be_aas_def.h"
 
+#include <stdint.h>
+
 #define ROUTING_DEBUG
 
 //travel time in hundreths of a second = distance * 100 / speed
@@ -1184,13 +1186,21 @@ void AAS_InitRouting( void ) {
 	max_routingcachesize = 1024 * (int) LibVarValue( "max_routingcache", "4096" );
 	//
 	// Ridah, load or create the routing cache
+#ifdef __i386__
 	if ( !AAS_ReadRouteCache() ) {
+#else
+	// layout of route cache datastructures is fixed on disk and thus not
+	// compatible when not on 32 bit platform - therefore rebuild route cache
+	if ( 1 ) {
+#endif
 		( *aasworld ).initialized = qtrue;    // Hack, so routing can compute traveltimes
 		AAS_CreateVisibility();
 		AAS_CreateAllRoutingCache();
 		( *aasworld ).initialized = qfalse;
 
+#ifdef __i386__
 		AAS_WriteRouteCache();  // save it so we don't have to create it again
+#endif
 	}
 	// done.
 } //end of the function AAS_InitRouting
@@ -2030,7 +2040,7 @@ void AAS_DecompressVis( byte *in, int numareas, byte *decompressed ) {
 
 	//row = (numareas+7)>>3;
 	out = decompressed;
-	end = ( byte * )( (int)decompressed + numareas );
+	end = ( byte * )( (intptr_t)decompressed + numareas );
 
 	do
 	{

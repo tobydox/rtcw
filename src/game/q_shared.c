@@ -30,6 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 //
 // q_shared.c -- stateless support routines that are included in each code dll
 #include "q_shared.h"
+#include <stdint.h>
 
 /*
 ============
@@ -833,8 +834,23 @@ void Q_strncpyz( char *dest, const char *src, int destsize ) {
 	if ( destsize < 1 ) {
 		Com_Error( ERR_FATAL,"Q_strncpyz: destsize < 1" );
 	}
-
-	strncpy( dest, src, destsize - 1 );
+	intptr_t s = (intptr_t)src;
+	intptr_t d = (intptr_t)dest;
+	if((d > s && d < s+destsize) ||
+		(s > d && s < d+destsize))
+	{
+		printf("Q_strncpyz(): source(%td) and destination(%td) overlapping while copying %d bytes\n", s, d, destsize);
+		int len = strlen(src);
+		if( len > destsize-1 )
+		{
+			len = destsize-1;
+		}
+		memmove( dest, src, len );
+	}
+	else
+	{
+		strncpy( dest, src, destsize - 1 );
+	}
 	dest[destsize - 1] = 0;
 }
 

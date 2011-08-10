@@ -212,13 +212,11 @@ ifeq ($(PLATFORM),linux)
   OPTIMIZE = $(OPTIMIZEVM) -ffast-math
 
   ifeq ($(ARCH),x86_64)
-    OPTIMIZEVM = -O3 -fomit-frame-pointer -funroll-loops \
-      -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
-      -fstrength-reduce
+    OPTIMIZEVM = -O3 -Wall -Wno-unused-but-set-variable -Wno-unused -Wno-address
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
   else
   ifeq ($(ARCH),i386)
-    OPTIMIZEVM = -O3 -march=i586 -fomit-frame-pointer \
+    OPTIMIZEVM = -O3 -m32 -march=pentium3 -fomit-frame-pointer \
       -funroll-loops -falign-loops=2 -falign-jumps=2 \
       -falign-functions=2 -fstrength-reduce
     OPTIMIZE = $(OPTIMIZEVM) -ffast-math
@@ -243,9 +241,13 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LIBS=-lpthread
-  LIBS=-ldl -lm -lsupc++
+  LIBS= $(LIB_PATH) -ldl -lm -lsupc++
 
-  CLIENT_LIBS=$(SDL_LIBS) -lGL
+  ifeq ($(ARCH),i386)
+  	CLIENT_LIBS=-L/usr/lib32 -lSDL-1.2 -lGL
+  else
+	  CLIENT_LIBS=-lSDL -lGL
+  endif
 
   ifeq ($(USE_LOCAL_HEADERS),1)
     CLIENT_CFLAGS += -I$(SDLHDIR)/include
@@ -789,6 +791,10 @@ WOLFOBJ += \
   $(B)/client/zutil.o
 endif
 
+define DO_SPLINE_CXX
+$(echo_cmd) "SPLINE_CXX $<"
+$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+endef
 
 ifeq ($(PLATFORM),mingw32)
   WOLFOBJ += \
@@ -1187,6 +1193,9 @@ $(B)/main/qcommon/%.o: $(CMDIR)/%.c
 
 $(B)/main/qcommon/%.asm: $(CMDIR)/%.c $(WOLFLCC)
 	$(DO_WOLFLCC)
+
+$(B)/splines/%.o: $(SPLDIR)/%.cpp
+	$(DO_SPLINE_CXX)
 
 # fretn
 $(B)/main/qcommon/q_math.o: $(GDIR)/q_math.c

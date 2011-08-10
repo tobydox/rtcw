@@ -33,14 +33,16 @@ If you have questions concerning this license or the applicable additional terms
 #pragma warning(disable : 4711) // selected for automatic inline expansion
 #endif
 
+#include <stdint.h>
+
 /* POINTER defines a generic pointer type */
 typedef unsigned char *POINTER;
 
 /* UINT2 defines a two byte word */
-typedef unsigned short int UINT2;
+typedef uint16_t UINT2;
 
 /* UINT4 defines a four byte word */
-typedef unsigned long int UINT4;
+typedef uint32_t UINT4;
 
 
 /* MD4.H - header file for MD4C.C */

@@ -30,6 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _QCOMMON_H_
 #define _QCOMMON_H_
 
+#include <stdint.h>
+
 #include "../qcommon/cm_public.h"
 
 #define MAXPRINTMSG 4096
@@ -366,7 +368,7 @@ typedef enum {
 } sharedTraps_t;
 
 void    VM_Init( void );
-vm_t    *VM_Create( const char *module, int ( *systemCalls )( int * ),
+vm_t    *VM_Create( const char *module, intptr_t ( *systemCalls )( intptr_t * ),
 					vmInterpret_t interpret );
 // module should be bare: "cgame", not "cgame.dll" or "vm/cgame.qvm"
 
@@ -374,13 +376,24 @@ void    VM_Free( vm_t *vm );
 void    VM_Clear( void );
 vm_t    *VM_Restart( vm_t *vm );
 
-int QDECL VM_Call( vm_t *vm, int callNum, ... );
+intptr_t QDECL VM_Call( vm_t *vm, int callNum, ... );
 
 void    VM_Debug( int level );
 
-void    *VM_ArgPtr( int intValue );
-void    *VM_ExplicitArgPtr( vm_t *vm, int intValue );
+void    *VM_ArgPtr( intptr_t intValue );
+void    *VM_ExplicitArgPtr( vm_t *vm, intptr_t intValue );
 
+#define VMA( x ) VM_ArgPtr( args[x] )
+static inline float _vmf(intptr_t x)
+{
+   int i = x;
+   float f;
+   memcpy(&f, &x, sizeof(i));
+   return f;
+}
+#define    VMF(x)  _vmf(args[x])
+extern int PASSFLOAT(float x);
+#define PASSFLOAT_MACRO( x ) ( *(int*)&x )
 /*
 ==============================================================
 
@@ -1016,8 +1029,8 @@ void Sys_LeaveCriticalSection( void *ptr );
 
 // general development dll loading for virtual machine testing
 
-void    * QDECL Sys_LoadDll( const char *name, int( QDECL * *entryPoint ) ( int, ... ),
-							 int ( QDECL * systemcalls )( int, ... ) );
+void    * QDECL Sys_LoadDll( const char *name, intptr_t( QDECL * *entryPoint ) ( intptr_t, ... ),
+							 intptr_t ( QDECL * systemcalls )( intptr_t, ... ) );
 void    Sys_UnloadDll( void *dllHandle );
 
 void    Sys_UnloadGame( void );
