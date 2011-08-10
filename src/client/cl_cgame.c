@@ -34,12 +34,9 @@ If you have questions concerning this license or the applicable additional terms
 
 extern botlib_export_t *botlib_export;
 
-//fretn: TODO
-#if 0
 extern qboolean loadCamera( int camNum, const char *name );
 extern void startCamera( int camNum, int time );
 extern qboolean getCameraInfo( int camNum, int time, vec3_t *origin, vec3_t *angles, float *fov );
-#endif
 
 // RF, this is only used when running a local server
 extern void SV_SendMoveSpeedsToGame( int entnum, char *text );
@@ -772,7 +769,7 @@ int CL_CgameSystemCalls( int *args ) {
 
 	case CG_LOADCAMERA:
                 //fretn
-		//return loadCamera( args[1], VMA( 2 ) );
+		return loadCamera( args[1], VMA( 2 ) );
                 return qfalse;
 
 	case CG_STARTCAMERA:
@@ -780,7 +777,7 @@ int CL_CgameSystemCalls( int *args ) {
 			cl.cameraMode = qtrue;  //----(SA)	added
 		}
                 // fretn
-		//startCamera( args[1], args[2] );
+		startCamera( args[1], args[2] );
 		return 0;
 
 //----(SA)	added
@@ -793,7 +790,7 @@ int CL_CgameSystemCalls( int *args ) {
 //----(SA)	end
 
 	case CG_GETCAMERAINFO:
-		//return getCameraInfo( args[1], args[2], VMA( 3 ), VMA( 4 ), VMA( 5 ) );
+		return getCameraInfo( args[1], args[2], VMA( 3 ), VMA( 4 ), VMA( 5 ) );
                 return qfalse;
 
 	case CG_GET_ENTITY_TOKEN:
@@ -982,7 +979,8 @@ void CL_InitCGame( void ) {
 	} else {
 		interpret = Cvar_VariableValue( "vm_cgame" );
 	}
-	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, interpret );
+	//cgvm = VM_Create( "cgame", CL_CgameSystemCalls, interpret );
+	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, VMI_NATIVE );
 //	cgvm = VM_Create( "cgame", CL_CgameSystemCalls, Cvar_VariableValue( "vm_cgame" ) );
 	if ( !cgvm ) {
 		Com_Error( ERR_DROP, "VM_Create on cgame failed" );

@@ -59,15 +59,15 @@ endif
 export ARCH
 
 ifneq ($(PLATFORM),$(COMPILE_PLATFORM))
-  CROSS_COspILING=1
+  CROSS_COMPILING=1
 else
-  CROSS_COspILING=0
+  CROSS_COMPILING=0
 
   ifneq ($(ARCH),$(COMPILE_ARCH))
-    CROSS_COspILING=1
+    CROSS_COMPILING=1
   endif
 endif
-export CROSS_COspILING
+export CROSS_COMPILING
 
 ifndef COPYDIR
 COPYDIR="/usr/local/games/wolfenstein"
@@ -97,8 +97,14 @@ ifndef USE_LOCAL_HEADERS
 USE_LOCAL_HEADERS=1
 endif
 
-ifndef DEBUG_CFLAGS
-DEBUG_CFLAGS=-g -O0
+ifeq ($(COMPILE_PLATFORM),mingw32)
+  ifndef DEBUG_CFLAGS
+    DEBUG_CFLAGS=-g -O0 -ggdb -gstabs
+  endif
+else
+  ifndef DEBUG_CFLAGS
+    DEBUG_CFLAGS=-g -O0 -ggdb
+  endif
 endif
 
 #############################################################################
@@ -119,10 +125,11 @@ NDIR=$(MOUNT_DIR)/null
 UIDIR=$(MOUNT_DIR)/ui
 JPDIR=$(MOUNT_DIR)/jpeg-6
 ZDIR=$(MOUNT_DIR)/zlib
+SPLDIR=$(MOUNT_DIR)/splines
 LOKISETUPDIR=misc/setup
 SDLHDIR=$(MOUNT_DIR)/SDL12
 LIBSDIR=$(MOUNT_DIR)/libs
-TEspDIR=/tsp
+TEMPDIR=/tmp
 
 bin_path=$(shell which $(1) 2> /dev/null)
 
@@ -236,7 +243,7 @@ ifeq ($(PLATFORM),linux)
   SHLIBLDFLAGS=-shared $(LDFLAGS)
 
   THREAD_LIBS=-lpthread
-  LIBS=-ldl -lm 
+  LIBS=-ldl -lm -lsupc++
 
   CLIENT_LIBS=$(SDL_LIBS) -lGL
 
@@ -259,7 +266,7 @@ else # ifeq Linux
 #############################################################################
 
 ifeq ($(PLATFORM),darwin)
-  LIBS = -framework Cocoa
+  LIBS = -framework Cocoa -lsupc++
   CLIENT_LIBS=
   OPTIMIZEVM=
   
@@ -283,6 +290,7 @@ ifeq ($(PLATFORM),darwin)
     BASE_CFLAGS += -mstackrealign
   endif
 
+#  BASE_CFLAGS += -fno-strict-aliasing -DMACOS_X -D__MACOS__ -fno-common -pipe
   BASE_CFLAGS += -fno-strict-aliasing -DMACOS_X -fno-common -pipe
   BASE_CFLAGS += -D_THREAD_SAFE=1
 
@@ -327,7 +335,8 @@ ifeq ($(PLATFORM),mingw32)
     WINDRES=windres
   endif
 
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes \
+  #BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes 
+  BASE_CFLAGS = -fno-strict-aliasing -Wimplicit \
     -DUSE_ICON -DC_ONLY
   CLIENT_CFLAGS =
   SERVER_CFLAGS =
@@ -360,7 +369,7 @@ ifeq ($(PLATFORM),mingw32)
 
   LIBS= -lws2_32 -lwinmm -lpsapi
   CLIENT_LDFLAGS = -mwindows
-  CLIENT_LIBS = -lgdi32 -lole32 -lopengl32
+  CLIENT_LIBS = -lgdi32 -lole32 -lopengl32 -lstdc++
 
   ifeq ($(ARCH),x86)
     # build 32bit
@@ -513,6 +522,10 @@ $(echo_cmd) "WINDRES $<"
 $(Q)$(WINDRES) -i $< -o $@
 endef
 
+define DO_SPLINE_CXX
+$(echo_cmd) "SPLINE_CXX $<"
+$(Q)$(CXX) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+endef
 
 #############################################################################
 # MAIN TARGETS
@@ -597,6 +610,7 @@ makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
 	@if [ ! -d $(B) ];then $(MKDIR) $(B);fi
 	@if [ ! -d $(B)/client ];then $(MKDIR) $(B)/client;fi
+	@if [ ! -d $(B)/splines ];then $(MKDIR) $(B)/splines;fi
 	@if [ ! -d $(B)/ded ];then $(MKDIR) $(B)/ded;fi
 	@if [ ! -d $(B)/main ];then $(MKDIR) $(B)/main;fi
 	@if [ ! -d $(B)/main/cgame ];then $(MKDIR) $(B)/main/cgame;fi
@@ -658,8 +672,6 @@ WOLFOBJ = \
   \
   $(B)/client/unzip.o \
   $(B)/client/vm.o \
-  $(B)/client/vm_interpreted.o \
-  $(B)/client/vm_x86.o \
   \
   $(B)/client/be_aas_bspq3.o \
   $(B)/client/be_aas_cluster.o \
@@ -751,6 +763,14 @@ WOLFOBJ = \
   $(B)/client/tr_surface.o \
   $(B)/client/tr_world.o \
   \
+  $(B)/splines/math_angles.o \
+  $(B)/splines/math_matrix.o \
+  $(B)/splines/math_quaternion.o \
+  $(B)/splines/math_vector.o \
+  $(B)/splines/q_parse.o \
+  $(B)/splines/splines.o \
+  $(B)/splines/util_str.o \
+  \
   $(B)/client/sdl_gamma.o \
   $(B)/client/sdl_input.o \
   $(B)/client/sdl_snd.o \
@@ -838,8 +858,6 @@ WOLFDOBJ = \
   \
   $(B)/ded/unzip.o \
   $(B)/ded/vm.o \
-  $(B)/ded/vm_interpreted.o \
-  $(B)/ded/vm_x86.o \
   \
   $(B)/ded/be_aas_bspq3.o \
   $(B)/ded/be_aas_cluster.o \
@@ -1078,6 +1096,9 @@ $(B)/client/%.o: $(SYSDIR)/%.m
 
 $(B)/client/%.o: $(SYSDIR)/%.rc
 	$(DO_WINDRES)
+
+$(B)/splines/%.o: $(SPLDIR)/%.cpp
+	$(DO_SPLINE_CXX)
 
 # fretn
 $(B)/client/q_math.o: $(GDIR)/q_math.c
