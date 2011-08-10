@@ -30,6 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <fcntl.h>
 #include <sys/time.h>
 
+void Field_AutoComplete( field_t *field );
+
 /*
 =============================================================
 tty console routines

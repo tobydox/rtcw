@@ -1134,7 +1134,7 @@ static int unzlocal_getShort (FILE* fin, uLong *pX)
 {
 	short	v;
 
-	fread( &v, sizeof(v), 1, fin );
+	int result = fread( &v, sizeof(v), 1, fin );
 
 	*pX = LittleShort( v);
 	return UNZ_OK;
@@ -1163,7 +1163,7 @@ static int unzlocal_getLong (FILE *fin, uLong *pX)
 {
 	int		v;
 
-	fread( &v, sizeof(v), 1, fin );
+	int result = fread( &v, sizeof(v), 1, fin );
 
 	*pX = LittleLong( v);
 	return UNZ_OK;

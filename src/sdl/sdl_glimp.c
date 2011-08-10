@@ -83,6 +83,8 @@ cvar_t *r_sdlDriver;
 //void (APIENTRYP qglLockArraysEXT) (GLint first, GLsizei count);
 //void (APIENTRYP qglUnlockArraysEXT) (void);
 
+void Sys_SetEnv(const char *name, const char *value);
+
 /*
 ===============
 GLimp_Shutdown

@@ -50,6 +50,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <IOKit/hidsystem/event_status_driver.h>
 #endif
 
+int Key_StringToKeynum( char *str );
+void Com_QueueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr );
+
 static cvar_t *in_keyboardDebug     = NULL;
 
 static SDL_Joystick *stick = NULL;

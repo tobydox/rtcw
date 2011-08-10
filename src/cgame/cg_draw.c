@@ -1937,7 +1937,7 @@ void CG_CenterPrint( const char *str, int y, int charWidth ) {
 	unsigned char   *s;
 
 //----(SA)	added translation lookup
-	Q_strncpyz( cg.centerPrint, CG_translateString( (char*)str ), sizeof( cg.centerPrint ) );
+	Q_strncpyz( (char *)cg.centerPrint, CG_translateString( (char*)str ), sizeof( cg.centerPrint ) );
 //----(SA)	end
 
 
@@ -1952,7 +1952,7 @@ void CG_CenterPrint( const char *str, int y, int charWidth ) {
 		if ( *s == '\n' ) {
 			cg.centerPrintLines++;
 		}
-		if ( !Q_strncmp( s, "\\n", 1 ) ) {
+		if ( !Q_strncmp( (char *)s, "\\n", 1 ) ) {
 			cg.centerPrintLines++;
 			s++;
 		}
@@ -1983,7 +1983,7 @@ static void CG_DrawCenterString( void ) {
 
 	trap_R_SetColor( color );
 
-	start = cg.centerPrint;
+	start = (char *)cg.centerPrint;
 
 	y = cg.centerPrintY - cg.centerPrintLines * BIGCHAR_HEIGHT / 2;
 

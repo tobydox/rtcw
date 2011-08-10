@@ -666,7 +666,7 @@ void RB_CalcColorFromEntity( unsigned char *dstColors ) {
 void RB_CalcColorFromOneMinusEntity( unsigned char *dstColors ) {
 	int i;
 	int *pColors = ( int * ) dstColors;
-	unsigned char invModulate[3];
+	unsigned char invModulate[4];
 	int c;
 
 	if ( !backEnd.currentEntity ) {
@@ -858,7 +858,7 @@ void RB_CalcFogTexCoords( float *st ) {
 	qboolean eyeOutside;
 	fog_t       *fog;
 	vec3_t local;
-	vec4_t fogDistanceVector, fogDepthVector;
+	vec4_t fogDistanceVector, fogDepthVector = { 0, 0, 0, 0 };
 
 	fog = tr.world->fogs + tess.fogNum;
 

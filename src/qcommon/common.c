@@ -107,6 +107,7 @@ char com_errorMessage[MAXPRINTMSG];
 void Com_WriteConfig_f( void );
 void CIN_CloseAllVideos();
 char *Sys_ConsoleInput(void);
+qboolean Sys_GetPacket( netadr_t *net_from, msg_t *net_message );
 
 //============================================================================
 

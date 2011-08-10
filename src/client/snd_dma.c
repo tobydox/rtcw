@@ -789,6 +789,7 @@ void S_ThreadStartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHand
 				}
 			}
 			if ( chosen == -1 ) {
+				ch = s_channels;
 				if ( ch->entnum == listener_number ) {
 					for ( i = 0 ; i < MAX_CHANNELS ; i++, ch++ ) {
 						if ( ch->allocTime < oldest ) {

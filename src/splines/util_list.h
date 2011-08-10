@@ -194,7 +194,7 @@ inline void idList<type>::Resize( int size ) {
 
 	temp    = m_list;
 	m_size  = size;
-	if ( m_size < m_num ) {
+	if ( (size_t)m_size < (size_t)m_num ) {
 		m_num = m_size;
 	}
 

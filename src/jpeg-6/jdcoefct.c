@@ -732,7 +732,7 @@ jinit_d_coef_controller( j_decompress_ptr cinfo, boolean need_full_buffer ) {
 	} else {
 		/* We only need a single-MCU buffer. */
 		JBLOCKROW buffer;
-		int i;
+		unsigned i;
 
 		buffer = (JBLOCKROW)
 				  ( *cinfo->mem->alloc_large ) ( (j_common_ptr) cinfo, JPOOL_IMAGE,

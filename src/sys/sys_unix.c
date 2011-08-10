@@ -1029,7 +1029,7 @@ void Sys_DoStartProcess( char *cmdline ) {
                 break;
         case 0:
                 if ( strchr( cmdline, ' ' ) ) {
-                        system( cmdline );
+                        int result = system( cmdline );
                 } else 
                 {    
                         execl( cmdline, cmdline, NULL );

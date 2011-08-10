@@ -203,7 +203,7 @@ ifeq ($(PLATFORM),linux)
   endif
 
   #BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wstrict-prototypes
-  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit \
+  BASE_CFLAGS = -Wall -fno-strict-aliasing -Wimplicit -Wno-write-strings \
     -pipe -DUSE_ICON -DC_ONLY -fno-common
   CLIENT_CFLAGS = $(SDL_CFLAGS)
   SERVER_CFLAGS =
