@@ -42,7 +42,8 @@ ENDIF(WIN32)
 # set compiler flags
 SET(CMAKE_C_FLAGS "-Wall -O2 -fno-strict-aliasing -Wno-unused-but-set-variable ${CMAKE_C_FLAGS}")
 SET(CMAKE_CXX_FLAGS "-Wall -O2 -Wno-unused-but-set-variable -Wno-write-strings ${CMAKE_CXX_FLAGS}")
-ADD_DEFINITIONS(-DBOTLIB)
+
+ADD_DEFINITIONS(-DBOTLIB -DC_ONLY)
 
 SET(S ${CMAKE_SOURCE_DIR}/src)
 
@@ -203,7 +204,7 @@ SET(rtcw_SOURCES
 
 IF(WIN32)
 	SET(rtcw_SOURCES ${rtcw_SOURCES} ${S}/sys/sys_win32.c)
-	ADD_DEFINITIONS(-DUSE_ICON -DC_ONLY)
+	ADD_DEFINITIONS(-DUSE_ICON)
 ENDIF()
 
 IF(UNIX)
