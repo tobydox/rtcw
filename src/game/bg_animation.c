@@ -794,7 +794,9 @@ BG_ParseConditionBits
   convert the string into a single int containing bit flags, stopping at a ',' or end of line
 =================
 */
-void BG_ParseConditionBits( char **text_pp, animStringItem_t *stringTable, int condIndex, int result[2] ) {
+#define RESULT_SIZE 2
+
+void BG_ParseConditionBits( char **text_pp, animStringItem_t *stringTable, int condIndex, int result[RESULT_SIZE] ) {
 	qboolean endFlag = qfalse;
 	int indexFound;
 	int /*indexBits,*/ tempBits[2];
@@ -804,7 +806,7 @@ void BG_ParseConditionBits( char **text_pp, animStringItem_t *stringTable, int c
 
 	//indexBits = 0;
 	currentString[0] = '\0';
-	memset( result, 0, sizeof( result ) );
+	memset( result, 0, sizeof( result[0] ) * RESULT_SIZE );
 	memset( tempBits, 0, sizeof( tempBits ) );
 
 	while ( !endFlag ) {
