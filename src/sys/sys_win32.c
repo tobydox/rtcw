@@ -762,6 +762,8 @@ qboolean Sys_PIDIsRunning( int pid )
 char* Sys_GetDLLName( const char *name ) {
 #if defined __i386__
         return va( "%si386.dll", name );
+#elif defined(WIN64)
+        return va( "%sx86_64.dll", name );
 #else
 #error Unknown arch
 #endif

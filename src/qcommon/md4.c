@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 /* GLOBAL.H - RSAREF types and constants */
 
 #include <string.h>
-#if defined( _WIN32 )
+#if defined( _MSC_VER )
 #pragma warning(disable : 4711) // selected for automatic inline expansion
 #endif
 

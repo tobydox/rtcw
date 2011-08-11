@@ -59,7 +59,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 
-#ifdef _WIN32
+#if (defined _MSC_VER)
 
 #pragma warning(disable : 4018) // signed/unsigned mismatch
 #pragma warning(disable : 4032)
@@ -185,6 +185,10 @@ typedef int intptr_t;
 
 #define PATH_SEP '\\'
 
+#endif
+
+#ifdef WIN64
+#define CPUSTRING   "win-x86_64"
 #endif
 
 //======================= MAC OS X SERVER DEFINES =====================

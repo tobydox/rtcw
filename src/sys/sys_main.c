@@ -466,7 +466,11 @@ Used to load a development dll instead of a virtual machine
 #endif
 #if defined(_WIN32) || defined(__WIN32__)
 #define DLL_EXT ".dll"
-#define DLL_ARCH "x86"
+#ifdef WIN64
+#define DLL_ARCH "x86_64"
+#else
+#define DLL_ARCH "i386"
+#endif
 #endif
 
 
@@ -587,7 +591,12 @@ main
 =================
 */
 
+#ifdef WIN32
+#include <windows.h>
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+#else
 int main( int argc, char **argv )
+#endif
 {
 	int   i;
 	char  commandLine[ MAX_STRING_CHARS ] = { 0 };
@@ -623,6 +632,9 @@ int main( int argc, char **argv )
 	// Set the initial time base
 	Sys_Milliseconds( );
 
+#ifdef WIN32
+	Q_strncpyz( commandLine, lpCmdLine, sizeof( commandLine ) );
+#else
 	Sys_ParseArgs( argc, argv );
 	Sys_SetBinaryPath( Sys_Dirname( argv[ 0 ] ) );
 	Sys_SetDefaultInstallPath( DEFAULT_BASEDIR );
@@ -641,6 +653,7 @@ int main( int argc, char **argv )
 
 		Q_strcat( commandLine, sizeof( commandLine ), " " );
 	}
+#endif
 
 	Com_Init( commandLine );
 	NET_Init( );
