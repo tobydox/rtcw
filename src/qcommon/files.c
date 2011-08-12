@@ -556,11 +556,13 @@ static void FS_CopyFile( char *fromOSPath, char *toOSPath ) {
 	fclose( f );
 
 	if ( FS_CreatePath( toOSPath ) ) {
+		free( buf );
 		return;
 	}
 
 	f = fopen( toOSPath, "wb" );
 	if ( !f ) {
+		free( buf );
 		return;
 	}
 	if ( fwrite( buf, 1, len, f ) != len ) {
