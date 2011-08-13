@@ -273,8 +273,8 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 	var->string = CopyString( var_value );
 	var->modified = qtrue;
 	var->modificationCount = 1;
-	var->value = ( strlen(var->string)>0 && (isdigit(var->string[0]) || var->string[0]=='.' ) ) ? atof( var->string ) : 0;
-	var->integer = strlen(var->string) > 0 ? atoi( var->string ) : 0;
+	var->value = atof( var->string );
+	var->integer = atoi( var->string );
 	var->resetString = CopyString( var_value );
 
 	// link the variable in
