@@ -33,8 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <setjmp.h>
 #include <stdint.h>
 
-#define MAXPRINTMSG 4096
-
 #define MAX_NUM_ARGVS   50
 
 
