@@ -1481,7 +1481,7 @@ static void UI_DrawMapLevelshot( rectDef_t *rect ) {
 
 	DC->getCVarString( "mapname", levelname, sizeof( levelname ) );
 
-	if ( levelname && levelname[0] != 0 ) {
+	if ( levelname[0] != 0 ) {
 		levelshot = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", levelname ) );
 	}
 
@@ -1539,9 +1539,7 @@ void UI_FilledBar( float x, float y, float w, float h, float *startColor, float 
 		if ( endColor ) {
 			endColor[3] *= ui_hudAlpha.value;
 		}
-		if ( backgroundcolor ) {
-			backgroundcolor[3] *= ui_hudAlpha.value;
-		}
+		backgroundcolor[3] *= ui_hudAlpha.value;
 	}
 
 	if ( flags & BAR_LERP_COLOR ) {

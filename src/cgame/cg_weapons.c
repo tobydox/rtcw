@@ -1139,7 +1139,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		strcpy( comppath, item->world_model[W_TP_MODEL] );  // not there, use the standard view hand
 
 	}
-	if ( ( !comppath || !cg_drawFPGun.integer ) &&     // then if it didn't find the 1st person one or you are set to not use one
+	if ( ( !cg_drawFPGun.integer ) &&     // then if it didn't find the 1st person one or you are set to not use one
 		 item->world_model[W_TP_MODEL] ) {
 		strcpy( comppath, item->world_model[W_TP_MODEL] );  // use the standard view hand
 
